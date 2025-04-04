@@ -45,7 +45,7 @@ const AdminHome = () => {
                     title="Vendors"
                     description="Manage restaurant vendors"
                     color="bg-green-600 hover:bg-green-700"
-                    onClick={() => navigate("/admin/vendors")}
+                    onClick={() => navigate("/admin/vendors-management")}
                 />
                 <DashboardCard
                     icon={<Truck className="w-8 h-8" />}

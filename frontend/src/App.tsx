@@ -7,7 +7,7 @@ import Home from './pages/Home'
 import { useAppSelector } from './store/hooks';
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLogin from './pages/admin/auth/AdminLogin';
-
+import { VendorsPage } from './pages/admin/vendor/VendorsPage';
 
 function App() {
   const admin = useAppSelector(state => state.admins.admin)
@@ -26,6 +26,7 @@ function App() {
 
         {/* Management */}
         <Route path="/admin/drivers-management" element={adminLogged ? <DriversPage /> : <AdminLogin />} />
+        <Route path="/admin/vendors-management" element={adminLogged ? <VendorsPage /> : <AdminLogin />} />
       </Routes>
     </>
   )

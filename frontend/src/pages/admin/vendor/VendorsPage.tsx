@@ -1,61 +1,67 @@
 import { useEffect, useState } from 'react';
-import { Plus, Truck } from 'lucide-react';
-import { Table, TableColumn } from '../../../components/Table';
-import { AddDriver } from './AddDriver';
-import Swal from 'sweetalert2';
-import { driverRegisterApi, editDriverApi, getDrivers, deleteDriverApi } from '../../../services/driverApi';
-import { DriverRegisterInput, IDriver } from '../../../utils/driver.types';
+import { Building2, Plus } from 'lucide-react';
 import { Loader } from '../../../components/Loader';
 import { Pagination } from '../../../components/Pagination';
-import { EditDriver } from './EditDriver';
+import { Table, TableColumn } from '../../../components/Table';
+import { IVendor } from '../../../utils/vendor.types';
+import { AddVendor } from './AddVendor';
+import { vendorRegisterApi, getVendors, editVendorApi, deleteVendorApi } from '../../../services/vendorApi';
+import Swal from 'sweetalert2';
+import { EditVendor } from './EditVendor';
 
-export const DriversPage = () => {
-    const [drivers, setDrivers] = useState<IDriver[]>([
+export const VendorsPage = () => {
+    const [vendors, setVendors] = useState<IVendor[]>([
         {
-            _id: "dsfsd",
-            name: 'John Smith',
+            _id: "vndr1",
+            name: 'ABC Suppliers',
+            email: 'contact@abcsuppliers.com',
             phone: 9876543210,
-            address: '123 Main St, New York, NY',
-            drivingLicense: 'DL123456789',
+            address: '123 Business Park, New York, NY',
             isDeleted: false
         },
         {
-            _id: "rgreg",
-            name: 'Robert Johnson',
+            _id: "vndr2",
+            name: 'XYZ Wholesale',
+            email: 'info@xyzwholesale.com',
             phone: 8765432109,
-            address: '456 Oak Ave, Los Angeles, CA',
-            drivingLicense: 'DL987654321',
+            address: '456 Industrial Zone, Los Angeles, CA',
             isDeleted: false
         },
         {
-            _id: "sdfsfs",
-            name: 'Michael Williams',
+            _id: "vndr3",
+            name: 'Global Distributors',
+            email: 'sales@globaldist.com',
             phone: 7654321098,
-            address: '789 Pine Rd, Chicago, IL',
-            drivingLicense: 'DL456789123',
+            address: '789 Trade Center, Chicago, IL',
             isDeleted: false
         }
     ]);
 
-    const [isAddDriverOpen, setIsAddDriverOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
-    const [editingDriver, setEditingDriver] = useState<IDriver | null>(null);
+    const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
+    const [editingVendor, setEditingVendor] = useState<IVendor | null>(null);
+    const vendorsPerPage = 6
 
-    const driversPerPage = 6;
+    const columns: TableColumn<IVendor>[] = [
+        { header: 'Vendor Name', accessor: 'name' },
+        { header: 'Email', accessor: 'email' },
+        { header: 'Phone Number', accessor: 'phone' },
+        { header: 'Address', accessor: 'address' },
+    ];
 
-    const fetchDrivers = async (currentPage: number) => {
+    const fetchVendors = async (currentPage: number) => {
         try {
             setLoading(true);
-            const response = await getDrivers(currentPage, driversPerPage);
+            const response = await getVendors(currentPage, vendorsPerPage);
             if (response?.status === 200) {
                 const { data } = response;
-                setDrivers(data.data.drivers)
+                setVendors(data.data.vendors)
                 setLoading(false);
                 setTotalPages(
-                    prev => (prev !== Math.ceil(data.data.totalDrivers / driversPerPage)
-                        ? Math.ceil(data.data.totalDrivers / driversPerPage)
+                    prev => (prev !== Math.ceil(data.data.totalVendors / vendorsPerPage)
+                        ? Math.ceil(data.data.totalVendors / vendorsPerPage)
                         : prev)
                 );
             }
@@ -76,77 +82,33 @@ export const DriversPage = () => {
     };
 
     useEffect(() => {
-        fetchDrivers(currentPage);
+        fetchVendors(currentPage);
     }, [currentPage]);
 
-    const handleAddDriver = () => {
-        setIsAddDriverOpen(true); // Open the modal
+    const handleAddVendor = () => {
+        setIsAddVendorOpen(true);
     };
 
-    const handleCloseAddDriver = () => {
-        setIsAddDriverOpen(false); // Close the modal
+    const handleCloseAddVendor = () => {
+        setIsAddVendorOpen(false);
     };
 
-    const handleDriverAdded = async (newDriver: DriverRegisterInput) => {
+    const handleVendorAdded = async (newVendor: IVendor) => {
         try {
-            const drivingLicense = `${newDriver.dlState}${newDriver.dlYear?.toString().slice(-2)}${newDriver.dlNumber}`;
-            const driverData = {
-                ...newDriver,
-                drivingLicense
-            };
-
-            const response = await driverRegisterApi(driverData);
-
-            if (response?.status === 200) {
-                fetchDrivers(currentPage)
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Success!",
-                    text: "Driver added successfully!",
-                    showConfirmButton: false,
-                    timer: 2000,
-                    toast: true,
-                });
-            }
-
-        } catch (error) {
-            Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Error!",
-                text: (error as Error)?.message || "Failed to add driver",
-                showConfirmButton: true,
-                confirmButtonText: "OK",
-                timer: 3000,
-                toast: true,
-            });
-        }
-    };
-
-    const handleEditDriver = (driver: IDriver) => {
-        setEditingDriver(driver);
-    };
-
-    // Handler for when update is complete
-    const handleDriverUpdated = async (updatedDriver: DriverRegisterInput) => {
-        try {
-            console.log("THata is EDible L :", updatedDriver);
-            const response = await editDriverApi(editingDriver?._id as string, updatedDriver)
+            const response = await vendorRegisterApi(newVendor)
             if (response?.status === 200) {
                 const { data } = response
-                // console.log("RESpon from the EditDriver :", data.data);
-                setDrivers(drivers.map(driver => {
-                    return driver._id === data.data._id ? data.data : driver;
-                }));
+                setVendors([data.data, ...vendors]);
+                setIsAddVendorOpen(false);
                 Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Success!",
-                    text: "Driver detils has been updated successfully!",
+                    icon: 'success',
+                    title: "Success",
+                    text: "Vendor has been Added successfully ✅",
+                    toast: true,
+                    position: 'top-end',
                     showConfirmButton: false,
                     timer: 2000,
-                    toast: true,
+                    timerProgressBar: true,
                 });
             }
         } catch (error) {
@@ -154,19 +116,20 @@ export const DriversPage = () => {
                 position: "top-end",
                 icon: "error",
                 title: "Error!",
-                text: (error as Error)?.message || "Failed to edit driver details",
+                text: (error as Error)?.message || "Something went wrong. Please try again.",
                 showConfirmButton: true,
                 confirmButtonText: "OK",
-                timer: 3000,
                 toast: true,
-            });
+            })
         }
     };
 
-    const handleDeleteDriver = async (driver: IDriver) => {
+    const handleEditVendor = (vendor: IVendor) => {
+        setEditingVendor(vendor);
+    };
+
+    const handleDeleteVendor = (vendor: IVendor) => {
         try {
-            console.log('Delete driver:', driver);
-            // Implement delete driver logic
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'Do you want to Delete this Driver ?',
@@ -180,10 +143,10 @@ export const DriversPage = () => {
                 timerProgressBar: true,
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const response = await deleteDriverApi(driver._id, currentPage, driversPerPage);
+                    const response = await deleteVendorApi(vendor._id, currentPage, vendorsPerPage);
                     if (response?.status === 200) {
                         const { data } = response;
-                        setDrivers(data.data);
+                        setVendors(data.data);
                         Swal.fire({
                             icon: 'success',
                             title: "Success",
@@ -211,12 +174,37 @@ export const DriversPage = () => {
         }
     };
 
-    const columns: TableColumn<IDriver>[] = [
-        { header: 'Name', accessor: 'name' },
-        { header: 'Mobile Number', accessor: 'phone' },
-        { header: 'Address', accessor: 'address' },
-        { header: 'License Number', accessor: 'drivingLicense' },
-    ];
+    const handleVendorUpdated = async (updatedVendor: IVendor) => {
+        try {
+            const response = await editVendorApi(updatedVendor._id, updatedVendor)
+            if (response?.status === 200) {
+                const { data } = response
+                setVendors(vendors.map(vendor =>
+                    vendor._id === data.data._id ? data.data : vendor
+                ));
+                setEditingVendor(null);
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Success!",
+                    text: "Vendor details has been updated successfully!",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error!",
+                text: (error as Error)?.message || "Something went wrong. Please try again.",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                toast: true,
+            })
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -224,13 +212,13 @@ export const DriversPage = () => {
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Truck Driver Management</h1>
+                        <h1 className="text-3xl font-bold text-gray-900">Vendor Management</h1>
                         <p className="mt-2 text-sm text-gray-600">
-                            Manage all your truck drivers in one place
+                            Manage all your vendors in one place
                         </p>
                     </div>
                     <button
-                        onClick={handleAddDriver}
+                        onClick={handleAddVendor}
                         className="relative flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden"
                     >
                         {/* Animated background effect */}
@@ -238,14 +226,14 @@ export const DriversPage = () => {
 
                         {/* Button content */}
                         <span className="relative flex items-center gap-3">
-                            {/* Truck icon with container */}
+                            {/* Vendor icon with container */}
                             <span className="flex items-center justify-center p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                                <Truck className="w-5 h-5 text-white" />
+                                <Building2 className="w-5 h-5 text-white" />
                             </span>
 
                             {/* Text with subtle animation */}
                             <span className="font-medium tracking-wide group-hover:translate-x-1 transition-transform duration-200">
-                                Add New Driver
+                                Add New Vendor
                             </span>
                         </span>
 
@@ -258,16 +246,15 @@ export const DriversPage = () => {
                 <div className="bg-white overflow-hidden shadow-xl rounded-xl border border-gray-100">
                     {loading ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
-                            <Loader message="Fetching driver records" size="md" />
+                            <Loader message="Fetching vendor records" size="md" />
                         </div>
                     ) : (
                         <>
-
                             <Table
-                                data={drivers}
+                                data={vendors}
                                 columns={columns}
-                                onEdit={handleEditDriver}
-                                onDelete={handleDeleteDriver}
+                                onEdit={handleEditVendor}
+                                onDelete={handleDeleteVendor}
                             />
                             <Pagination
                                 currentPage={currentPage}
@@ -280,42 +267,41 @@ export const DriversPage = () => {
                 </div>
 
                 {/* Empty State */}
-                {drivers.length === 0 && (
+                {vendors.length === 0 && (
                     <div className="bg-white rounded-xl shadow-sm p-12 text-center border-2 border-dashed border-gray-200 mt-8">
-                        <Truck className="mx-auto h-12 w-12 text-gray-400" />
-                        <h3 className="mt-2 text-lg font-medium text-gray-900">No drivers found</h3>
+                        <Building2 className="mx-auto h-12 w-12 text-gray-400" />
+                        <h3 className="mt-2 text-lg font-medium text-gray-900">No vendors found</h3>
                         <p className="mt-1 text-sm text-gray-500">
-                            Get started by adding a new truck driver.
+                            Get started by adding a new vendor.
                         </p>
                         <div className="mt-6">
                             <button
-                                onClick={handleAddDriver}
+                                onClick={handleAddVendor}
                                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             >
                                 <Plus className="-ml-1 mr-2 h-5 w-5" />
-                                Add Driver
+                                Add Vendor
                             </button>
                         </div>
                     </div>
                 )}
 
-                {isAddDriverOpen && (
-                    <AddDriver
-                        onClose={handleCloseAddDriver}
-                        onDriverAdded={handleDriverAdded}
-                    />
-                )}
-                {/* Edit Driver Modal */}
-                {editingDriver && (
-                    <EditDriver
-                        driverData={editingDriver}
-                        onClose={() => setEditingDriver(null)}
-                        onDriverUpdated={handleDriverUpdated}
+                {isAddVendorOpen && (
+                    <AddVendor
+                        onClose={handleCloseAddVendor}
+                        onVendorAdded={handleVendorAdded}
                     />
                 )}
 
-                {/* Add/Edit Modal would go here */}
+                {/* Edit Vendor Modal */}
+                {editingVendor && (
+                    <EditVendor
+                        vendorData={editingVendor}
+                        onClose={() => setEditingVendor(null)}
+                        onVendorUpdated={handleVendorUpdated}
+                    />
+                )}
             </div>
         </div>
     );
-};
+}
