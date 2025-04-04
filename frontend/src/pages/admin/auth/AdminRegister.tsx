@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { adminRegisterApi } from "../../services/adminApi";
-import { AdminRegisterInput } from "../../utils/constants";
+import { adminRegisterApi } from "../../../services/adminApi";
+import { AdminRegisterInput } from "../../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 

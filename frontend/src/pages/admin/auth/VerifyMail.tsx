@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { verifyEmail } from "../../services/adminApi";
+import { verifyEmail } from "../../../services/adminApi";
 import Swal from "sweetalert2";
-import { login } from "../../store/slice/AdminSlice";
-import { useAppDispatch } from "../../store/hooks";
+import { login } from "../../../store/slice/AdminSlice";
+import { useAppDispatch } from "../../../store/hooks";
 
 const VerifyMail = () => {
     const [verified, setVerified] = useState(false);

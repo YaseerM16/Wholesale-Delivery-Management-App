@@ -1,75 +1,234 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Truck } from 'lucide-react';
 import { Table, TableColumn } from '../../../components/Table';
+import { AddDriver } from './AddDriver';
+import Swal from 'sweetalert2';
+import { driverRegisterApi, editDriverApi, getDrivers, deleteDriverApi } from '../../../services/driverApi';
+import { DriverRegisterInput, IDriver } from '../../../utils/driver.types';
+import { Loader } from '../../../components/Loader';
+import { Pagination } from '../../../components/Pagination';
+import { EditDriver } from './EditDriver';
 
-interface Driver {
-    id: string;
-    name: string;
-    mobileNumber: string;
-    address: string;
-    licenseNumber: string;
-    licenseExpiry: string;
-    vehicleType: string;
+export interface Driver {
+    name: string,
+    address: string,
+    phone: number,
+    drivingLicense: string,
+    password: string,
 }
 
 export const DriversPage = () => {
-    const [drivers, setDrivers] = useState<Driver[]>([
+    const [drivers, setDrivers] = useState<IDriver[]>([
         {
-            id: '1',
+            _id: "dsfsd",
             name: 'John Smith',
-            mobileNumber: '9876543210',
+            phone: 9876543210,
             address: '123 Main St, New York, NY',
-            licenseNumber: 'DL123456789',
-            licenseExpiry: '2025-12-31',
-            vehicleType: 'Medium Truck'
+            drivingLicense: 'DL123456789',
+            isDeleted: false
         },
         {
-            id: '2',
+            _id: "rgreg",
             name: 'Robert Johnson',
-            mobileNumber: '8765432109',
+            phone: 8765432109,
             address: '456 Oak Ave, Los Angeles, CA',
-            licenseNumber: 'DL987654321',
-            licenseExpiry: '2024-11-30',
-            vehicleType: 'Heavy Truck'
+            drivingLicense: 'DL987654321',
+            isDeleted: false
         },
         {
-            id: '3',
+            _id: "sdfsfs",
             name: 'Michael Williams',
-            mobileNumber: '7654321098',
+            phone: 7654321098,
             address: '789 Pine Rd, Chicago, IL',
-            licenseNumber: 'DL456789123',
-            licenseExpiry: '2026-05-15',
-            vehicleType: 'Light Truck'
+            drivingLicense: 'DL456789123',
+            isDeleted: false
         }
     ]);
 
+    const [isAddDriverOpen, setIsAddDriverOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [editingDriver, setEditingDriver] = useState<IDriver | null>(null);
+
+    const driversPerPage = 6;
+
+    const fetchDrivers = async (currentPage: number) => {
+        try {
+            setLoading(true);
+            const response = await getDrivers(currentPage, driversPerPage);
+            if (response?.status === 200) {
+                const { data } = response;
+                setDrivers(data.data.drivers)
+                setLoading(false);
+                setTotalPages(
+                    prev => (prev !== Math.ceil(data.data.totalDrivers / driversPerPage)
+                        ? Math.ceil(data.data.totalDrivers / driversPerPage)
+                        : prev)
+                );
+            }
+        } catch (err) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error!",
+                text: (err as Error)?.message || "Something went wrong. Please try again.",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                timer: 3000,
+                toast: true,
+            });
+        } finally {
+            setLoading(false)
+        }
+    };
+
+    useEffect(() => {
+        fetchDrivers(currentPage);
+    }, [currentPage]);
+
     const handleAddDriver = () => {
-        // Implement add driver logic
-        console.log('Add new driver');
+        setIsAddDriverOpen(true); // Open the modal
     };
 
-    const handleEditDriver = (driver: Driver) => {
-        // Implement edit driver logic
-        console.log('Edit driver:', driver);
+    const handleCloseAddDriver = () => {
+        setIsAddDriverOpen(false); // Close the modal
     };
 
-    const handleDeleteDriver = (driver: Driver) => {
-        // Implement delete driver logic
-        setDrivers(drivers.filter(d => d.id !== driver.id));
-        console.log('Delete driver:', driver);
+    const handleDriverAdded = async (newDriver: DriverRegisterInput) => {
+        try {
+            const drivingLicense = `${newDriver.dlState}${newDriver.dlYear?.toString().slice(-2)}${newDriver.dlNumber}`;
+            const driverData = {
+                ...newDriver,
+                drivingLicense
+            };
+
+            const response = await driverRegisterApi(driverData);
+
+            if (response?.status === 200) {
+                fetchDrivers(currentPage)
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Success!",
+                    text: "Driver added successfully!",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                });
+            }
+
+        } catch (error) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error!",
+                text: (error as Error)?.message || "Failed to add driver",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                timer: 3000,
+                toast: true,
+            });
+        }
     };
 
-    const columns: TableColumn<Driver>[] = [
+    // const handleEditDriver = (driver: IDriver) => {
+    //     // Implement edit driver logic
+    //     console.log('Edit driver:', driver);
+    // };
+
+    const handleEditDriver = (driver: IDriver) => {
+        setEditingDriver(driver);
+    };
+
+    // Handler for when update is complete
+    const handleDriverUpdated = async (updatedDriver: DriverRegisterInput) => {
+        try {
+            console.log("THata is EDible L :", updatedDriver);
+            const response = await editDriverApi(editingDriver?._id as string, updatedDriver)
+            if (response?.status === 200) {
+                const { data } = response
+                // console.log("RESpon from the EditDriver :", data.data);
+                setDrivers(drivers.map(driver => {
+                    return driver._id === data.data._id ? data.data : driver;
+                }));
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Success!",
+                    text: "Driver detils has been updated successfully!",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error!",
+                text: (error as Error)?.message || "Failed to edit driver details",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                timer: 3000,
+                toast: true,
+            });
+        }
+    };
+
+    const handleDeleteDriver = async (driver: IDriver) => {
+        try {
+            console.log('Delete driver:', driver);
+            // Implement delete driver logic
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to Delete this Driver ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, proceed!',
+                cancelButtonText: 'No, cancel!',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                timerProgressBar: true,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const response = await deleteDriverApi(driver._id, currentPage, driversPerPage);
+                    if (response?.status === 200) {
+                        const { data } = response;
+                        setDrivers(data.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: "Success",
+                            text: "Driver has been Deleted successfully ✅",
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+            });
+        } catch (error) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Error!",
+                text: (error as Error)?.message || "Something went wrong. Please try again.",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                timer: 3000,
+                toast: true,
+            });
+        }
+    };
+
+    const columns: TableColumn<IDriver>[] = [
         { header: 'Name', accessor: 'name' },
-        { header: 'Mobile Number', accessor: 'mobileNumber' },
+        { header: 'Mobile Number', accessor: 'phone' },
         { header: 'Address', accessor: 'address' },
-        { header: 'License Number', accessor: 'licenseNumber' },
-        {
-            header: 'License Expiry',
-            accessor: 'licenseExpiry',
-            cell: (value: string) => new Date(value).toLocaleDateString()
-        },
-        { header: 'Vehicle Type', accessor: 'vehicleType' }
+        { header: 'License Number', accessor: 'drivingLicense' },
     ];
 
     return (
@@ -110,14 +269,27 @@ export const DriversPage = () => {
 
                 {/* Main Table Section */}
                 <div className="bg-white overflow-hidden shadow-xl rounded-xl border border-gray-100">
-                    <div className="p-1 sm:p-2">
-                        <Table
-                            data={drivers}
-                            columns={columns}
-                            onEdit={handleEditDriver}
-                            onDelete={handleDeleteDriver}
-                        />
-                    </div>
+                    {loading ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
+                            <Loader message="Fetching driver records" size="md" />
+                        </div>
+                    ) : (
+                        <>
+
+                            <Table
+                                data={drivers}
+                                columns={columns}
+                                onEdit={handleEditDriver}
+                                onDelete={handleDeleteDriver}
+                            />
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                className="mt-4"
+                            />
+                        </>
+                    )}
                 </div>
 
                 {/* Empty State */}
@@ -138,6 +310,21 @@ export const DriversPage = () => {
                             </button>
                         </div>
                     </div>
+                )}
+
+                {isAddDriverOpen && (
+                    <AddDriver
+                        onClose={handleCloseAddDriver}
+                        onDriverAdded={handleDriverAdded}
+                    />
+                )}
+                {/* Edit Driver Modal */}
+                {editingDriver && (
+                    <EditDriver
+                        driverData={editingDriver}
+                        onClose={() => setEditingDriver(null)}
+                        onDriverUpdated={handleDriverUpdated}
+                    />
                 )}
 
                 {/* Add/Edit Modal would go here */}

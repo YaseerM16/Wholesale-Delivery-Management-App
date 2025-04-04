@@ -4,6 +4,7 @@ import { config } from "./utils/constants";
 import morgan from "morgan"
 import cors from "cors"
 import { adminRouter } from "./routes/admin.routes";
+import { driverRouter } from "./routes/driver.routes";
 
 const app = express();
 const PORT = config.PORT || 5000;
@@ -20,6 +21,7 @@ app.use(cors({
 }));
 
 app.use(adminRouter)
+app.use("/driver", driverRouter)
 
 app.get("/", (req, res) => {
     res.send("Server is running!");

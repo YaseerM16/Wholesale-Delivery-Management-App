@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendResponse } from "../../utils/responseHandler";
-import AdminAuthServices, { adminAuthServices } from "../../services/admin/auth.service";
+import AdminAuthServices, { adminAuthServices } from "../../services/admin/admin.auth.service";
 
 export default class AdminAuthcontroller {
     private adminAuthServices: AdminAuthServices
