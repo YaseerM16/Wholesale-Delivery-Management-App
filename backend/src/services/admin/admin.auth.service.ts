@@ -1,4 +1,4 @@
-import { IAdminAuthServicesMethods } from "../../interface/service.ts/IAdminService"
+import { IAdminAuthServicesMethods } from "../../interface/service.ts/admin/IAdminAuthService"
 import AdminAuthRepository from "../../repositories/admin/admin.auth.repository"
 import { AdminRegisterInput, IAdmin } from "../../types/admin.types"
 import bcrypt from "bcrypt"

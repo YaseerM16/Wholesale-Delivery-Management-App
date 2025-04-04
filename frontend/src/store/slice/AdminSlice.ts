@@ -12,7 +12,6 @@ const adminSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action: PayloadAction<AdminState['admin']>) => {
-            console.log("THe State Reducer :", "State :", state, "Action ::", action);
             state.admin = action.payload
         },
         logout: (state) => {

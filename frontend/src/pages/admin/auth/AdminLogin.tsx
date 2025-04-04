@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import { adminLogin } from "../../services/adminApi";
-import { useAppDispatch } from "../../store/hooks";
-import { login } from "../../store/slice/AdminSlice";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useAppDispatch } from "../../../store/hooks";
+import { adminLogin } from "../../../services/adminApi";
+import { login } from "../../../store/slice/AdminSlice";
 
 
-const Login = () => {
+const AdminLogin = () => {
     const dispatcher = useAppDispatch()
     const navigate = useNavigate()
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<{ email: string, password: string }>();
@@ -88,4 +88,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default AdminLogin;

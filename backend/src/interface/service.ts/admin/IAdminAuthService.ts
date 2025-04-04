@@ -1,4 +1,4 @@
-import { IAdmin, AdminRegisterInput } from "../../types/admin.types"
+import { IAdmin, AdminRegisterInput } from "../../../types/admin.types"
 
 export interface IAdminAuthServicesMethods {
     register(data: AdminRegisterInput): Promise<IAdmin>

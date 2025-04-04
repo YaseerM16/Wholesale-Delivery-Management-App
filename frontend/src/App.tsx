@@ -1,12 +1,12 @@
 import AdminHome from './pages/admin/AdminHome';
-import EmailVerificationNotice from './pages/admin/CheckEmail';
+import EmailVerificationNotice from './pages/admin/auth/CheckEmail';
 import { DriversPage } from './pages/admin/drivers/DriversPage';
-import Login from './pages/admin/Login';
-import Register from './pages/admin/Register';
-import VerifyMail from './pages/admin/VerifyMail';
+import AdminRegister from './pages/admin/auth/AdminRegister';
+import VerifyMail from './pages/admin/auth/VerifyMail';
 import Home from './pages/Home'
 import { useAppSelector } from './store/hooks';
 import { Routes, Route, Navigate } from "react-router-dom";
+import AdminLogin from './pages/admin/auth/AdminLogin';
 
 
 function App() {
@@ -19,13 +19,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/verifymail" element={<VerifyMail />} />
-        <Route path="/login/admin" element={adminLogged ? <Navigate to="/home/admin" replace /> : <Login />} />
-        <Route path="/register/admin" element={adminLogged ? <Navigate to="/home/admin" replace /> : <Register />} />
-        <Route path="/home/admin" element={adminLogged ? <AdminHome /> : <Register />} />
+        <Route path="/login/admin" element={adminLogged ? <Navigate to="/home/admin" replace /> : <AdminLogin />} />
+        <Route path="/register/admin" element={adminLogged ? <Navigate to="/home/admin" replace /> : <AdminRegister />} />
+        <Route path="/home/admin" element={adminLogged ? <AdminHome /> : <AdminRegister />} />
         <Route path="/check-email/admin" element={adminLogged ? <AdminHome /> : <EmailVerificationNotice />} />
 
         {/* Management */}
-        <Route path="/admin/drivers-management" element={adminLogged ? <DriversPage /> : <Login />} />
+        <Route path="/admin/drivers-management" element={adminLogged ? <DriversPage /> : <AdminLogin />} />
       </Routes>
     </>
   )
