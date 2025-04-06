@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendResponse } from "../../utils/responseHandler";
 import AdminAuthServices, { adminAuthServices } from "../../services/admin/admin.auth.service";
+import { IAdminAuthServicesMethods } from "../../interface/service.ts/admin/IAdminAuthService";
 
 export default class AdminAuthcontroller {
-    private adminAuthServices: AdminAuthServices
+    private adminAuthServices: IAdminAuthServicesMethods
 
     constructor(adminAuthServices: AdminAuthServices) {
         this.adminAuthServices = adminAuthServices

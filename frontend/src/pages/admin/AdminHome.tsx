@@ -59,7 +59,7 @@ const AdminHome = () => {
                     title="Inventory"
                     description="Manage product inventory"
                     color="bg-purple-600 hover:bg-purple-700"
-                    onClick={() => navigate("/admin/inventory")}
+                    onClick={() => navigate("/admin/inventory-management")}
                 />
             </div>
         </div>
