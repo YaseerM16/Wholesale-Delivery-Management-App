@@ -8,6 +8,7 @@ import { useAppSelector } from './store/hooks';
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLogin from './pages/admin/auth/AdminLogin';
 import { VendorsPage } from './pages/admin/vendor/VendorsPage';
+import { InventoryPage } from './pages/admin/inventory/InventoryPage';
 
 function App() {
   const admin = useAppSelector(state => state.admins.admin)
@@ -27,6 +28,7 @@ function App() {
         {/* Management */}
         <Route path="/admin/drivers-management" element={adminLogged ? <DriversPage /> : <AdminLogin />} />
         <Route path="/admin/vendors-management" element={adminLogged ? <VendorsPage /> : <AdminLogin />} />
+        <Route path="/admin/inventory-management" element={adminLogged ? <InventoryPage /> : <AdminLogin />} />
       </Routes>
     </>
   )

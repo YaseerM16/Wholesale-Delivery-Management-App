@@ -1,3 +1,4 @@
+import { IDriverAuthServiceMethods } from "../../interface/service.ts/driver/IDriverAuthService";
 import DriverAuthServices, { driverAuthServices } from "../../services/driver/driver.auth.service";
 import { DriverRegisterInput } from "../../types/driver.types";
 import { sendErrorResponse, sendResponse } from "../../utils/responseHandler";
@@ -5,7 +6,7 @@ import { Request, Response } from "express";
 
 
 export default class DriverAuthcontroller {
-    private driverAuthServices: DriverAuthServices
+    private driverAuthServices: IDriverAuthServiceMethods
 
     constructor(driverAuthServices: DriverAuthServices) {
         this.driverAuthServices = driverAuthServices
