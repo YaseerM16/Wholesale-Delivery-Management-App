@@ -292,8 +292,8 @@ export const InventoryPage = () => {
                     timer: 2000,
                     toast: true,
                 });
+                setEditingInventory(null);
             }
-            setEditingInventory(null);
         } catch (error) {
             Swal.fire({
                 position: "top-end",
