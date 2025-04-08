@@ -288,11 +288,14 @@ export const InventoryPage = () => {
                     icon: "success",
                     title: "Success!",
                     text: "Item details has been updated successfully!",
-                    showConfirmButton: false,
-                    timer: 2000,
+                    showConfirmButton: true,
+                    confirmButtonText: "OK",
                     toast: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        setEditingInventory(null);
+                    }
                 });
-                setEditingInventory(null);
             }
         } catch (error) {
             Swal.fire({
