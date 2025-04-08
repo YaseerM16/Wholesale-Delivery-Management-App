@@ -4,7 +4,7 @@ import { IDriverAuthRepositoryMethods } from "../../interface/repository.ts/driv
 import DriverModel, { IDriver } from "../../models/Driver.model"
 import { DriverRegisterInput, IDriver as DriverInstance } from "../../types/driver.types"
 import BaseRepository from "../base.repository"
-
+import bcryptjs from "bcrypt"
 
 
 
@@ -42,7 +42,29 @@ export default class DriverAuthRepository extends BaseRepository<{
             throw error
         }
     }
-    login(phone: number, password: string): Promise<{ token: string }> {
-        throw new Error("Method not implemented.")
+    async login(phone: number, password: string): Promise<DriverInstance> {
+        try {
+
+            const driver = await this.findOne("Driver", { phone });
+            if (!driver) throw new Error("Invalid phone number or password.");
+
+            if (driver.isDeleted) throw new Error("Your Driver account is deleted.");
+
+            const isPasswordValid = await bcryptjs.compare(password, driver.password);
+            if (!isPasswordValid) throw new Error("Invalid or Incorrect password.");
+
+            const loggedInDriver: DriverInstance = {
+                _id: driver._id as ObjectId,
+                name: driver.name,
+                address: driver.address,
+                phone: driver.phone,
+                drivingLicense: driver.drivingLicense,
+                isDeleted: driver.isDeleted
+            };
+
+            return loggedInDriver
+        } catch (error) {
+            throw error;
+        }
     }
 }

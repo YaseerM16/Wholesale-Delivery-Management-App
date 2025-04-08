@@ -1,6 +1,4 @@
-import { IDriver } from "../../../models/Driver.model"
 import { IInventory } from "../../../models/Inventory.model"
-import { DriverRegisterInput } from "../../../types/driver.types"
 import { InventoryInput } from "../../../types/inventory.types"
 
 export interface IInventoryRepositoryMethods {

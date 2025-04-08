@@ -23,6 +23,19 @@ export const driverRegisterApi = async (signupData: DriverRegisterInput) => {
     }
 };
 
+
+export const driverLogin = async (phone: number, password: string) => {
+    try {
+        const response = await axiosInstance.post(`/driver/login`, { phone, password });
+        return response;
+    } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+            throw new Error(error?.response?.data.message)
+        }
+    }
+};
+
+
 export const getDrivers = async (page: number | undefined, limit: number | undefined) => {
     try {
         const response = await axiosInstance.get(`/driver/get-drivers?page=${page}&limit=${limit}`,);

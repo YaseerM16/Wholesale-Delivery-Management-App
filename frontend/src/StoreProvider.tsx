@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Provider } from "react-redux";
-// import { userLogin, UserState } from "./store/slices/UserSlice";
 import { AppStore, makeStore } from "./store/store";
 import { login } from "./store/slice/AdminSlice";
+import { login as driverLogin } from "./store/slice/DriverSlice"
 import { Admin } from "./utils/constants";
+import { IDriver } from "./utils/driver.types";
 
 export default function StoreProvider({
     children,
@@ -14,11 +15,16 @@ export default function StoreProvider({
 
     useEffect(() => {
         const adminJson = localStorage.getItem("admin");
+        const driverJson = localStorage.getItem("driver");
 
         if (adminJson) {
             const admin: Admin = JSON.parse(adminJson);
-            // console.log("UserJOSN : ", user);
             storeRef.current?.dispatch(login(admin));
+        }
+
+        if (driverJson) {
+            const driver: IDriver = JSON.parse(driverJson);
+            storeRef.current?.dispatch(driverLogin(driver));
         }
 
     }, []);

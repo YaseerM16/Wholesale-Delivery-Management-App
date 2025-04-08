@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Package, X } from 'lucide-react';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 interface InventoryInput {
     name: string;
     price: number;
+    quantity: number;
     category: string;
     images: File[]; // Now an array of Files
 }
@@ -53,7 +54,7 @@ export const AddItem = ({ onClose, onItemAdded }: AddItemProps) => {
             formData.append("name", data.name);
             formData.append("price", String(data.price));
             formData.append("category", data.category);
-
+            formData.append("quantity", String(data.quantity))
             imagesArray.forEach((file) => formData.append("images", file));
 
             console.log("Form data with images:", formData);
@@ -142,6 +143,29 @@ export const AddItem = ({ onClose, onItemAdded }: AddItemProps) => {
                             />
                             {errors.price && (
                                 <p className="text-sm text-red-500">{errors.price.message}</p>
+                            )}
+                        </div>
+                        {/* Quantity */}
+                        <div className="space-y-1">
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                                Quantity *
+                            </label>
+                            <input
+                                id="quantity"
+                                type="number"
+                                step="0.01"
+                                placeholder="Enter quantity"
+                                className={`w-full px-3 py-2 border rounded-md ${errors.quantity ? 'border-red-500' : 'border-gray-300'}`}
+                                {...register('quantity', {
+                                    required: 'quantity is required',
+                                    min: {
+                                        value: 1,
+                                        message: 'quantity must be greater than 0'
+                                    }
+                                })}
+                            />
+                            {errors.quantity && (
+                                <p className="text-sm text-red-500">{errors.quantity.message}</p>
                             )}
                         </div>
 

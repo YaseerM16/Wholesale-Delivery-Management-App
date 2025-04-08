@@ -37,6 +37,7 @@ export default class InventoryRepository extends BaseRepository<{
                 _id: addItem._id,
                 name: addItem.name,
                 price: addItem.price,
+                quantity: addItem.quantity,
                 category: addItem.category,
                 images: addItem.images
             }
@@ -100,4 +101,5 @@ export default class InventoryRepository extends BaseRepository<{
             throw error;
         }
     }
+
 }

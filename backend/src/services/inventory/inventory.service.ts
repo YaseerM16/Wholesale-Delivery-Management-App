@@ -36,6 +36,7 @@ export default class InventoryServices implements IInventoryServiceMethods {
             const item: InventoryInput = {
                 name: data.name,
                 price: Number(data.price),
+                quantity: Number(data.quantity),
                 category: data.category,
                 images: imagesArr
             }
@@ -63,6 +64,7 @@ export default class InventoryServices implements IInventoryServiceMethods {
             const item: InventoryInput = {
                 name: data.name,
                 price: Number(data.price),
+                quantity: Number(data.quantity),
                 category: data.category,
                 images: [...existingImages, ...imagesArr]
             }
