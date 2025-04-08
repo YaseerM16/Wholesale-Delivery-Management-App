@@ -9,7 +9,7 @@ import { useAppDispatch } from "../../store/hooks";
 const DriverLogin = () => {
     const dispatcher = useAppDispatch()
     const navigate = useNavigate()
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<{ phone: number, password: string }>();
+    const { register, handleSubmit, formState: { errors } } = useForm<{ phone: number, password: string }>();
 
     const onSubmit = async (data: { phone: number; password: string; }) => {
         try {

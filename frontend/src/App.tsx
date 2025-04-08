@@ -13,7 +13,6 @@ import DriverHome from './pages/driver/DriverHome';
 import DriverLogin from './pages/driver/DriverLogin';
 import CreateBill from './pages/driver/CreateBill';
 import OrdersPage from './pages/driver/OrdersPage';
-import OrderViewPage from './pages/driver/ViewOrder';
 
 function App() {
   const admin = useAppSelector(state => state.admins.admin)

@@ -6,7 +6,7 @@ import { IVendor } from "../../utils/vendor.types";
 import { getOrders } from "../../services/orderApi";
 import { Order, productList } from "../../utils/order.types";
 import OrderViewPage from "./ViewOrder";
-import { Package, Settings, Truck } from "lucide-react";
+import { Package, Truck } from "lucide-react";
 // import { TableColumn } from "../../components/Table/Table.types";
 interface OrdersPageProps {
     role: 'ADMIN' | 'DRIVER';
