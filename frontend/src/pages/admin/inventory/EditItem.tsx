@@ -23,6 +23,7 @@ export const EditItem = ({ itemData, onClose, onItemUpdated }: EditItemProps) =>
         reset({
             name: itemData.name,
             price: itemData.price,
+            quantity: itemData.quantity,
             category: itemData.category,
             images: itemData.images
         });
@@ -60,6 +61,7 @@ export const EditItem = ({ itemData, onClose, onItemUpdated }: EditItemProps) =>
             formData.append("name", data.name);
             formData.append("price", String(data.price));
             formData.append("category", data.category);
+            formData.append("quantity", String(data.quantity))
             imagesArray.forEach((file: any) => formData.append("images", file));
             formData.append("existingImages", JSON.stringify(existingImages));
 
@@ -159,6 +161,29 @@ export const EditItem = ({ itemData, onClose, onItemUpdated }: EditItemProps) =>
                                 <p className="text-sm text-red-500">{errors.price.message}</p>
                             )}
                         </div>
+                        {/* Quantity */}
+                        <div className="space-y-1">
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+                                Quantity *
+                            </label>
+                            <input
+                                id="quantity"
+                                type="number"
+                                step="0.01"
+                                placeholder="Enter quantity"
+                                className={`w-full px-3 py-2 border rounded-md ${errors.quantity ? 'border-red-500' : 'border-gray-300'}`}
+                                {...register('quantity', {
+                                    required: 'quantity is required',
+                                    min: {
+                                        value: 1,
+                                        message: 'quantity must be greater than 0'
+                                    }
+                                })}
+                            />
+                            {errors.quantity && (
+                                <p className="text-sm text-red-500">{errors.quantity.message}</p>
+                            )}
+                        </div>
 
                         {/* Category */}
                         <div className="space-y-1">
@@ -176,6 +201,12 @@ export const EditItem = ({ itemData, onClose, onItemUpdated }: EditItemProps) =>
                                 <option value="Plumbing">Plumbing</option>
                                 <option value="Tools">Tools</option>
                                 <option value="Safety Equipment">Safety Equipment</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Beverages">Beverages</option>
+                                <option value="Stationery">Stationery</option>
+                                <option value="Cleaning Supplies">Cleaning Supplies</option>
+                                <option value="Furniture">Furniture</option>
+                                <option value="Packaging Materials">Packaging Materials</option>
                             </select>
                             {errors.category && (
                                 <p className="text-sm text-red-500">{errors.category.message}</p>

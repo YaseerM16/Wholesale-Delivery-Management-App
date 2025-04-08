@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import adminSlice from "./slice/AdminSlice"
+import driverSlice from "./slice/DriverSlice"
 // import userReducer from "./slices"
 // import { useReducer } from "react";
 // import chatReducer from "./features/chatSlice";
@@ -10,6 +11,7 @@ export const makeStore = () => {
     return configureStore({
         reducer: {
             admins: adminSlice,
+            drivers: driverSlice
         },
     });
 };

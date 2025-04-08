@@ -32,6 +32,23 @@ export default class DriverAuthcontroller {
             return
         }
     }
+
+    async driverLogin(req: Request, res: Response): Promise<void> {
+        const { phone, password } = req.body;
+        if (!phone || !password) sendErrorResponse(res, "Missing phone or password", 400);
+        try {
+            const loggedDriver = await this.driverAuthServices.login(phone, password)
+            sendResponse({
+                res,
+                success: true,
+                message: "Driver Logged In Successfully :)",
+                data: loggedDriver
+            })
+        } catch (error) {
+            sendErrorResponse(res, (error as Error).message || "Internal Server Error", 500);
+        }
+    }
+
 }
 
 export const driverAuthController = new DriverAuthcontroller(driverAuthServices)

@@ -17,3 +17,7 @@ export type IDriver = {
     drivingLicense: string;
     isDeleted: boolean;
 }
+
+export type DriverState = {
+    driver?: IDriver | null
+}

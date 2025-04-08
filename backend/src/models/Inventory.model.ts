@@ -5,6 +5,7 @@ export interface IInventory extends Document {
     _id: ObjectId;
     name: string;
     price: number;
+    quantity: number;
     category: string;
     images: { imageUrl: string, name: string }[];
     isDeleted: boolean;
@@ -15,6 +16,7 @@ export interface IInventory extends Document {
 const InventorySchema: Schema = new Schema<IInventory>({
     name: { type: String, required: true },
     price: { type: Number, required: true, min: 1 },
+    quantity: { type: Number, required: true, min: 1 },
     images: {
         type: [{
             imageUrl: { type: String, required: true },

@@ -1,6 +1,5 @@
 import axios, { AxiosError } from "axios";
 import { BACKEND_URL } from "../utils/constants";
-import { InventoryInput } from "../utils/inventory.types";
 
 export const axiosInstance = axios.create({
     baseURL: BACKEND_URL || "http://localhost:5000",

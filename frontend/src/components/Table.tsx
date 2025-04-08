@@ -2,9 +2,10 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { ReactNode } from 'react';
 
 export interface TableColumn<T> {
-    header: string;
+    header: ReactNode;
     accessor: keyof T;
     cell?: (value: any, row: T) => ReactNode;
+
 }
 
 interface TableProps<T> {
@@ -12,9 +13,10 @@ interface TableProps<T> {
     columns: TableColumn<T>[];
     onEdit?: (item: T) => void;
     onDelete?: (item: T) => void;
+    emptyState?: ReactNode; // <-- Add this line
 }
 
-export function Table<T>({ data, columns, onEdit, onDelete }: TableProps<T>) {
+export function Table<T>({ data, columns, onEdit, onDelete, }: TableProps<T>) {
     return (
         <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="min-w-full divide-y divide-gray-200">
