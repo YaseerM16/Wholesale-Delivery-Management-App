@@ -18,4 +18,4 @@ export type AdminState = {
     admin?: Admin | null
 }
 
-export const BACKEND_URL = "https://wholesale-delivery-management-app-tjdi.onrender.com/"
+export const BACKEND_URL = "https://wholesale-delivery-management-app-tjdi.onrender.com"

@@ -9,6 +9,7 @@ import { addItemToInventoryApi, getInventory, editItemApi, deleteItemApi } from 
 import Swal from 'sweetalert2';
 import { EditItem } from './EditItem';
 import AdminNavbar from '../AdminNavbar';
+import { BACKEND_URL } from '../../../utils/constants';
 
 export const InventoryPage = () => {
     const [inventory, setInventory] = useState<Inventory[]>([
@@ -75,10 +76,10 @@ export const InventoryPage = () => {
                                     <div
                                         key={`${row._id}-${index}`}
                                         className="w-10 h-10 rounded-md overflow-hidden border border-gray-200 cursor-pointer transition-transform duration-200 hover:scale-110 hover:shadow-md"
-                                        onClick={() => setPreviewImg(`http://localhost:5000/uploads/${img.name}`)}
+                                        onClick={() => setPreviewImg(`${BACKEND_URL}/uploads/${img.name}`)}
                                     >
                                         <img
-                                            src={`http://localhost:5000/uploads/${img.name}`}
+                                            src={`${BACKEND_URL}/uploads/${img.name}`}
                                             alt={`${img.name} image ${index + 1}`}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
@@ -104,10 +105,10 @@ export const InventoryPage = () => {
                                         <div
                                             key={`${row._id}-expanded-${index}`}
                                             className="w-16 h-16 cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow"
-                                            onClick={() => setPreviewImg(`http://localhost:5000/uploads/${img.name}`)}
+                                            onClick={() => setPreviewImg(`${BACKEND_URL}/uploads/${img.name}`)}
                                         >
                                             <img
-                                                src={`http://localhost:5000/uploads/${img.name}`}
+                                                src={`${BACKEND_URL}/uploads/${img.name}`}
                                                 alt={`${img.name} image ${index + 1}`}
                                                 className="w-full h-full object-cover rounded-md border"
                                             />

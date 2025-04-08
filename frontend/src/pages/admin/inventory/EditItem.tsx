@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Package, X } from 'lucide-react';
 import { Inventory, InventoryInput } from '../../../utils/inventory.types';
+import { BACKEND_URL } from '../../../utils/constants';
 
 interface EditItemProps {
     itemData: Inventory;
@@ -229,7 +230,7 @@ export const EditItem = ({ itemData, onClose, onItemUpdated }: EditItemProps) =>
                                         <div key={`existing-${index}`} className="relative group">
                                             <div className="w-16 h-16 rounded-md border border-gray-300 overflow-hidden">
                                                 <img
-                                                    src={`http://localhost:5000/uploads/${img.name}`}
+                                                    src={`${BACKEND_URL}/uploads/${img.name}`}
                                                     alt={img.name}
                                                     className="w-full h-full object-cover"
                                                 />
