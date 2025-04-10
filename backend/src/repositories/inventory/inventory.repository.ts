@@ -64,7 +64,8 @@ export default class InventoryRepository extends BaseRepository<{
                 name: data.name,
                 category: data.category,
                 price: data.price,
-                images: data.images
+                images: data.images,
+                quantity: data.quantity
             });
 
             return updatedItem as IInventory
