@@ -152,12 +152,6 @@ const OrderViewPage = ({ isOpen, onClose, order, onSave }: OrderViewModalProps) 
                                     {showSuccess && (
                                         <p className="text-sm text-green-600 mt-1">Amount updated successfully!</p>
                                     )}
-                                    {error && (
-                                        <p className="text-sm text-red-600 mt-1">{error}</p>
-                                    )}
-                                    {showSuccess && (
-                                        <p className="text-sm text-green-600 mt-1">Amount updated successfully!</p>
-                                    )}
                                     {order.status === "Completed" && (
                                         <p className="text-xs text-gray-500 mt-1">
                                             Amount cannot be modified for completed orders

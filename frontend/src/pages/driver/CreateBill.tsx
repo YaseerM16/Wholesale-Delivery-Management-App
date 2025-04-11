@@ -7,6 +7,7 @@ import { useAppSelector } from "../../store/hooks";
 import { createOrderApi } from "../../services/orderApi";
 import { OrderInput } from "../../utils/order.types";
 import Swal from "sweetalert2";
+import { BACKEND_URL } from "../../utils/constants";
 
 // Types
 export type IVendor = {
@@ -57,6 +58,7 @@ const CreateBill = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true)
                 const [vendorsRes, productsRes] = await Promise.all([
                     // axios.get("/api/vendors"),
                     // axios.get("/api/inventory"),
@@ -177,13 +179,13 @@ const CreateBill = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <div className="flex justify-center items-center min-h-screen">
+    //             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -249,65 +251,81 @@ const CreateBill = () => {
                     {/* Product Selection */}
                     <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
                         <h2 className="text-xl font-semibold mb-4 text-gray-800">Products</h2>
+                        {loading ? <div className="flex justify-center items-center min-h-screen">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                        </div> : <>
+                            {/* Update the product card rendering in your existing code */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                {products.map((product) => {
+                                    const isSelected = orderItems.some(item => item.product._id === product._id);
+                                    return (
+                                        <div
+                                            key={product._id}
+                                            className={`border rounded-lg p-4 transition-all duration-300 cursor-pointer ${isSelected
+                                                ? 'border-blue-500 bg-blue-50 shadow-md'
+                                                : 'border-gray-200 hover:bg-gray-50 hover:shadow-sm'
+                                                }`}
+                                            onClick={() => {
+                                                if (isSelected) {
+                                                    handleRemoveProduct(product._id);
+                                                } else {
+                                                    handleAddProduct(product);
+                                                }
+                                            }}
+                                        >
+                                            <div className="flex gap-4">
+                                                {/* Product Image */}
+                                                <div className="flex-shrink-0">
+                                                    <img
+                                                        src={`${BACKEND_URL}/uploads/${product.images[0].name}` || '/placeholder-product.png'}
+                                                        alt={product.name}
+                                                        className="w-20 h-20 object-cover rounded-md"
+                                                    />
+                                                </div>
 
-                        // Update the product card rendering in your existing code
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            {products.map((product) => {
-                                const isSelected = orderItems.some(item => item.product._id === product._id);
-                                return (
-                                    <div
-                                        key={product._id}
-                                        className={`border rounded-lg p-4 transition-all duration-300 cursor-pointer ${isSelected
-                                            ? 'border-blue-500 bg-blue-50 shadow-md'
-                                            : 'border-gray-200 hover:bg-gray-50 hover:shadow-sm'
-                                            }`}
-                                        onClick={() => {
-                                            if (isSelected) {
-                                                handleRemoveProduct(product._id);
-                                            } else {
-                                                handleAddProduct(product);
-                                            }
-                                        }}
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <h3 className={`font-medium ${isSelected ? 'text-blue-700' : 'text-gray-800'
-                                                    }`}>
-                                                    {product.name}
-                                                    {isSelected && (
-                                                        <span className="ml-2 text-blue-600">
-                                                            ✓
+                                                {/* Product Details */}
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <h3 className={`font-medium ${isSelected ? 'text-blue-700' : 'text-gray-800'}`}>
+                                                                {product.name}
+                                                                {isSelected && (
+                                                                    <span className="ml-2 text-blue-600">
+                                                                        ✓
+                                                                    </span>
+                                                                )}
+                                                            </h3>
+                                                            <p className={isSelected ? 'text-blue-600' : 'text-gray-600'}>
+                                                                ${product.price.toFixed(2)}
+                                                            </p>
+                                                            <p className={`text-sm ${isSelected ? 'text-blue-500' : 'text-gray-500'}`}>
+                                                                Available: {product.quantity}
+                                                            </p>
+                                                        </div>
+                                                        <span className={`text-xs px-2 py-1 rounded-full ${isSelected
+                                                            ? 'bg-blue-100 text-blue-800'
+                                                            : 'bg-gray-100 text-gray-800'
+                                                            }`}>
+                                                            {product.category}
                                                         </span>
-                                                    )}
-                                                </h3>
-                                                <p className={isSelected ? 'text-blue-600' : 'text-gray-600'}>
-                                                    ${product.price.toFixed(2)}
-                                                </p>
-                                                <p className={`text-sm ${isSelected ? 'text-blue-500' : 'text-gray-500'
-                                                    }`}>
-                                                    Available: {product.quantity}
-                                                </p>
-                                            </div>
-                                            <span className={`text-xs px-2 py-1 rounded-full ${isSelected
-                                                ? 'bg-blue-100 text-blue-800'
-                                                : 'bg-gray-100 text-gray-800'
-                                                }`}>
-                                                {product.category}
-                                            </span>
-                                        </div>
+                                                    </div>
 
-                                        {/* Show quantity only if selected */}
-                                        {isSelected && (
-                                            <div className="mt-2">
-                                                <p className="text-xs text-blue-600">
-                                                    Selected (click to remove)
-                                                </p>
+                                                    {/* Show quantity only if selected */}
+                                                    {isSelected && (
+                                                        <div className="mt-2">
+                                                            <p className="text-xs text-blue-600">
+                                                                Selected (click to remove)
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>}
+
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
